@@ -1,0 +1,42 @@
+.message {
+    padding: 5px;
+    margin: 4px;
+    border: 1px solid #ccc;
+}
+
+.message.active {
+    background-color: #aaa;
+}
+
+.message:hover {
+    cursor: pointer;
+}
+
+.message-large {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.close {
+    position: fixed;
+    top: 5px;
+    left: 50%;
+    text-align: center;
+    width: 50px;
+    background-color: #999;
+    color: #fff;
+    padding: 2px;
+}
+
+.close:hover {
+    cursor: pointer;
+}
+
+.headers {
+    font-weight: bold;
+    padding: 5px 0px;
+}
+
+.body {
+    padding: 5px 0px;
+}
