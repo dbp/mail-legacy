@@ -1,7 +1,7 @@
 .reload {
     border: 1px solid #ccc;
     padding: 5px;
-    width: 55px;
+    width: 5em;
     margin: 4px;
     text-align: center;
 }
@@ -41,7 +41,7 @@
     top: 5px;
     left: 50%;
     text-align: center;
-    width: 50px;
+    width: 5em;
     background-color: #999;
     color: #fff;
     padding: 2px;
