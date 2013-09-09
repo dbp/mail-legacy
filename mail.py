@@ -28,10 +28,10 @@ def js():
 
 @route('/mail/all')
 def all():
-    return {"content": shell("notmuch search --format=json tag:important AND tag:inbox")}
+    return {"content": shell("TZ=EST notmuch search --format=json tag:important AND tag:inbox")}
 
 @route('/mail/<thread>')
 def read(thread):
-    return {"content": shell("notmuch show --format=json thread:%s" % thread)}
+    return {"content": shell("TZ=EST notmuch show --format=json thread:%s" % thread)}
 
 run(host='localhost', port=40000)
