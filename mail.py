@@ -16,7 +16,7 @@ def index():
     <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script type=text/javascript src='/mail/mail.js'></script>
     <link rel="stylesheet" type="text/css" href="/mail/main.css"></link>
-    </head><body>Loading...</body></html>"""
+    </head><body></body></html>"""
 
 @route('/mail/mail.js')
 def js():

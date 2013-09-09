@@ -1,3 +1,22 @@
+.reload {
+    border: 1px solid #ccc;
+    padding: 5px;
+    width: 55px;
+    margin: 4px;
+    text-align: center;
+}
+
+.reload:hover {
+    cursor: pointer;
+}
+
+.error {
+    margin: 4px auto;
+    padding: 5px;
+    width: 50%;
+    border: 1px solid #F62217;
+}
+
 .message {
     padding: 5px;
     margin: 4px;

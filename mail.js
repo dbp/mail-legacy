@@ -1,8 +1,15 @@
-$(function () {
+function loadMail(container) {
+  container.contents().hide();
+  container.append($("<div class='loading'>Loading...</div>"));
   $.ajax("/mail/all", {
+    error: function (_, errorType, errorMsg) {
+      container.contents().show();
+      $(".loading").remove();
+      $(".error").remove();
+      container.prepend($("<div class='error'>" + errorType + ": " + errorMsg + "</div>"));
+    },
     success: function (data) {
-      var container = $("body");
-      container.text("");
+      container.contents().remove();
       data.content.forEach(function (e) {
         var link = $("<div class='message'></div>");
         link.text(e.date_relative + " - " + e.authors + " - " + e.subject);
@@ -53,4 +60,16 @@ $(function () {
       });
     }
   });
+}
+
+$(function () {
+  var reload = $("<div class='reload'>reload</div>");
+  reload.click(function () {
+    loadMail(container)
+  });
+
+  var container = $("<div class='container'>");
+  $("body").append(reload).append(container);
+
+  loadMail(container);
 });
