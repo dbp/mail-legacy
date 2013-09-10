@@ -2,6 +2,7 @@ function loadMail(container) {
   container.contents().hide();
   container.append($("<div class='loading'>Loading...</div>"));
   $.ajax("/mail/all", {
+    data: {p: getPassword()},
     error: function (_, errorType, errorMsg) {
       container.contents().show();
       $(".loading").remove();
@@ -62,14 +63,40 @@ function loadMail(container) {
   });
 }
 
+function getPassword() {
+  return window.localStorage.p;
+}
+
+function setPassword(container) {
+  var input = $("<input>");
+  var button = $("<button>Save</button>");
+  var holder = $("<div>");
+  button.click(function () {
+    window.localStorage.p = input.val();
+    holder.remove();
+    loadMail(container);
+  });
+  holder.append($("<div>Password:</div>")).append(input).append(button);
+  container.prepend(holder);
+}
+
 $(function () {
   var reload = $("<div class='reload'>reload</div>");
   reload.click(function () {
     loadMail(container)
   });
 
-  var container = $("<div class='container'>");
-  $("body").append(reload).append(container);
+  var set = $("<div class='set'>set pass</div>");
+  set.click(function () {
+    setPassword(container);
+  });
 
-  loadMail(container);
+  var container = $("<div class='container'>");
+  $("body").append(reload).append(set).append(container);
+
+  if (getPassword()) {
+    loadMail(container);
+  } else {
+    getPassword(container);
+  }
 });

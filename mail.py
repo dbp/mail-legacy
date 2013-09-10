@@ -1,4 +1,4 @@
-from bottle import route, run, static_file
+from bottle import route, run, request, static_file
 from os import popen
 import json
 
@@ -8,6 +8,9 @@ def shell(cmd):
 def add_link(line):
     w = line.split()
     return "<a href='/mail/%s'>%s</a>" % (w[0].split(":")[1], " ".join(w[1:]))
+
+print("Password:")
+password = raw_input()
 
 @route('/mail/')
 def index():
@@ -28,10 +31,14 @@ def js():
 
 @route('/mail/all')
 def all():
+    if request.query.get('p','') != password:
+        raise RuntimeError, "Invalid Password"
     return {"content": shell("TZ=EST notmuch search --format=json tag:important AND tag:inbox")}
 
 @route('/mail/<thread>')
 def read(thread):
+    if request.query.get('p','') != password:
+        raise RuntimeError, "Invalid Password"
     return {"content": shell("TZ=EST notmuch show --format=json thread:%s" % thread)}
 
 run(host='localhost', port=40000)
