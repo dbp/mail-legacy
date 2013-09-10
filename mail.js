@@ -1,3 +1,34 @@
+function renderMessages(data, container) {
+  var msgs = data[0];
+  var content = msgs[0];
+  var section = $("<div class='section'>");
+  container.append(section);
+  var headers = content.headers;
+  var headerDiv = $("<div class='headers'>");
+  headerDiv.append("<div>From: " + headers.From + "</div>");
+  headerDiv.append("<div>Subject: " + headers.Subject + "</div>");
+  headerDiv.append("<div>Date: " + headers.Date + "</div>");
+  section.append(headerDiv);
+  var bodyContent = content.body[0].content;
+  var body;
+  if (typeof bodyContent === 'string') {
+    body = bodyContent
+  } else {
+    var tmp = bodyContent.filter(function (o) { return o["content-type"] == "text/plain"});
+    if (tmp.length > 0) {
+      body = tmp[0].content;
+    } else {
+      body = "Could not find message body in JSON.";
+    }
+  }
+  var bodyDiv = $("<div class='body'>" + body.replace(/\n/g, "<br />") + "</div>");
+  section.append(bodyDiv);
+
+  if (msgs.length > 1 && msgs[1].length > 0) {
+    renderMessages(msgs[1], container);
+  }
+}
+
 function loadMail(container) {
   container.contents().hide();
   container.append($("<div class='loading'>Loading...</div>"));
@@ -25,35 +56,11 @@ function loadMail(container) {
             link.removeClass("active");
           });
           $.ajax("/mail/" + e.thread, {
+            data: {p: getPassword()},
             success: function (data) {
               container.prepend(message);
               message.append(close);
-              window.data = data.content;
-              data.content[0].forEach(function (mcontent) {
-                content = mcontent[0];
-                var section = $("<div class='section'>");
-                message.append(section);
-                var headers = content.headers;
-                var headerDiv = $("<div class='headers'>");
-                headerDiv.append("<div>From: " + headers.From + "</div>");
-                headerDiv.append("<div>Subject: " + headers.Subject + "</div>");
-                headerDiv.append("<div>Date: " + headers.Date + "</div>");
-                section.append(headerDiv);
-                var bodyContent = content.body[0].content;
-                var body;
-                if (typeof bodyContent === 'string') {
-                  body = bodyContent
-                } else {
-                  var tmp = bodyContent.filter(function (o) { return o["content-type"] == "text/plain"});
-                  if (tmp.length > 0) {
-                    body = tmp[0].content;
-                  } else {
-                    body = "Could not find message body in JSON.";
-                  }
-                }
-                var bodyDiv = $("<div class='body'>" + body.replace(/\n/g, "<br />") + "</div>");
-                section.append(bodyDiv);
-              });
+              renderMessages(data.content[0], message);
             }
           });
         });
