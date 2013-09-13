@@ -39,7 +39,7 @@
 .close {
     position: fixed;
     top: 5px;
-    left: 50%;
+    right: 5px;
     text-align: center;
     width: 5em;
     background-color: #999;
