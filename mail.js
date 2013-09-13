@@ -88,12 +88,12 @@ function setPassword(container) {
 }
 
 $(function () {
-  var reload = $("<div class='reload'>reload</div>");
+  var reload = $("<button class='reload'>reload</button>");
   reload.click(function () {
     loadMail(container)
   });
 
-  var set = $("<div class='set'>set pass</div>");
+  var set = $("<button class='set'>set pass</button>");
   set.click(function () {
     setPassword(container);
   });
