@@ -1,5 +1,5 @@
 from bottle import route, run, request, static_file
-from os import popen, system
+from os import popen, system, path
 import json
 
 def shell(cmd):
@@ -9,8 +9,13 @@ def add_link(line):
     w = line.split()
     return "<a href='/mail/%s'>%s</a>" % (w[0].split(":")[1], " ".join(w[1:]))
 
-print("Password:")
-password = raw_input()
+if path.isfile("pass.txt"):
+    f = open("pass.txt")
+    password = f.read().strip()
+    f.close()
+else:
+    print("Input Password:")
+    password = raw_input()
 
 @route('/mail/')
 def index():
