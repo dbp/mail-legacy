@@ -1,20 +1,4 @@
-function renderMessages(data, container) {
-  var msgs = data[0];
-  var content = msgs[0];
-  var section = $("<div class='section'>");
-  container.append(section);
-  var headers = content.headers;
-  var headerDiv = $("<div class='headers'>");
-  headerDiv.append("<div>From: " + headers.From + "</div>");
-  headerDiv.append("<div>To: " + headers.To + "</div>");
-  headerDiv.append("<div>Subject: " + headers.Subject + "</div>");
-  headerDiv.append("<div>Date: " + headers.Date + "</div>");
-  section.append(headerDiv);
-  var bodyContent = content.body[0].content;
-  var bodyDiv = $("<div class='body'>");
-  function setBody(body) {
-    bodyDiv.html(body);
-  }
+function findBody(bodyContent, setBody) {
   if (typeof bodyContent === 'string') {
     setBody(bodyContent.replace(/\n/g, "<br />"));
   } else {
@@ -37,11 +21,37 @@ function renderMessages(data, container) {
           });
         });
       } else {
-        setBody("Could not find message body in JSON.");
+        // see if we need to go deeper
+        tmp = bodyContent.filter(function (o) { return o["content-type"] == "multipart/alternative"});
+        if (tmp.length > 0) {
+          findBody(tmp[0].content, setBody);
+        } else {
+          setBody("Could not find message body in JSON.");
+        }
       }
     }
   }
 
+}
+
+function renderMessages(data, container) {
+  var msgs = data[0];
+  var content = msgs[0];
+  var section = $("<div class='section'>");
+  container.append(section);
+  var headers = content.headers;
+  var headerDiv = $("<div class='headers'>");
+  headerDiv.append("<div>From: " + headers.From + "</div>");
+  headerDiv.append("<div>To: " + headers.To + "</div>");
+  headerDiv.append("<div>Subject: " + headers.Subject + "</div>");
+  headerDiv.append("<div>Date: " + headers.Date + "</div>");
+  section.append(headerDiv);
+  var bodyContent = content.body[0].content;
+  var bodyDiv = $("<div class='body'>");
+  function setBody(body) {
+    bodyDiv.html(body);
+  }
+  findBody(bodyContent, setBody);
   section.append(bodyDiv);
 
   if (msgs.length > 1 && msgs[1].length > 0) {
@@ -105,7 +115,6 @@ function loadMail(container) {
             success: function (data) {
               container.prepend(message);
               message.append(buttons);
-              window.msg = data.content[0];
               renderMessages(data.content[0], message);
             }
           });
