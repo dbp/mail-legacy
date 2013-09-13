@@ -50,7 +50,7 @@ function loadMail(container) {
           $(".message-large").remove();
           link.addClass("active");
           var message = $("<div class='message-large'></div>");
-          var close = $("<div class='close'>close</div>");
+          var close = $("<button class='close'>close</button>");
           close.click(function () {
             message.remove();
             link.removeClass("active");
