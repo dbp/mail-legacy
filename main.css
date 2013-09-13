@@ -1,4 +1,4 @@
-.reload, .set {
+.button {
     border: 1px solid #ccc;
     padding: 5px;
     margin: 4px;
@@ -6,7 +6,7 @@
     display: inline-block;
 }
 
-.reload:hover, .set:hover {
+.button:hover {
     cursor: pointer;
 }
 
@@ -43,6 +43,7 @@
 }
 
 .message-buttons button {
+    border: 1px solid #ccc;
     text-align: center;
     background-color: #999;
     color: #fff;

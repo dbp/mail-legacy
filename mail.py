@@ -50,6 +50,12 @@ def archive(thread):
     system("TZ=EST notmuch tag -important thread:%s" % thread)
     return {}
 
+@route('/mail/html/<id>/<part>')
+def html(id, part):
+    if request.query.get('p','') != password:
+        raise RuntimeError, "Invalid Password"
+    return "\n".join(popen("TZ=EST notmuch show --part=%s id:%s" % (part, id)).readlines())
+
 
 @route('/mail/<thread>')
 def read(thread):

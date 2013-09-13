@@ -6,22 +6,42 @@ function renderMessages(data, container) {
   var headers = content.headers;
   var headerDiv = $("<div class='headers'>");
   headerDiv.append("<div>From: " + headers.From + "</div>");
+  headerDiv.append("<div>To: " + headers.To + "</div>");
   headerDiv.append("<div>Subject: " + headers.Subject + "</div>");
   headerDiv.append("<div>Date: " + headers.Date + "</div>");
   section.append(headerDiv);
   var bodyContent = content.body[0].content;
-  var body;
+  var bodyDiv = $("<div class='body'>");
+  function setBody(body) {
+    bodyDiv.html(body);
+  }
   if (typeof bodyContent === 'string') {
-    body = bodyContent
+    setBody(bodyContent.replace(/\n/g, "<br />"));
   } else {
     var tmp = bodyContent.filter(function (o) { return o["content-type"] == "text/plain"});
     if (tmp.length > 0) {
-      body = tmp[0].content;
+      setBody(tmp[0].content.replace(/\n/g, "<br />"));
     } else {
-      body = "Could not find message body in JSON.";
+      // look for html
+      tmp = bodyContent.filter(function (o) { return o["content-type"] == "text/html"});
+      if (tmp.length > 0) {
+        // need to load via a separate call... :(
+        var load = $("<button class='button'>Load HTML</button>");
+        setBody(load);
+        load.click(function () {
+          $.ajax("/mail/html/" + content.id + "/" + tmp[0].id, {
+            data: {p: getPassword()},
+            success: function (data) {
+              setBody(data);
+            }
+          });
+        });
+      } else {
+        setBody("Could not find message body in JSON.");
+      }
     }
   }
-  var bodyDiv = $("<div class='body'>" + body.replace(/\n/g, "<br />") + "</div>");
+
   section.append(bodyDiv);
 
   if (msgs.length > 1 && msgs[1].length > 0) {
@@ -85,6 +105,7 @@ function loadMail(container) {
             success: function (data) {
               container.prepend(message);
               message.append(buttons);
+              window.msg = data.content[0];
               renderMessages(data.content[0], message);
             }
           });
@@ -113,12 +134,12 @@ function setPassword(container) {
 }
 
 $(function () {
-  var reload = $("<button class='reload'>reload</button>");
+  var reload = $("<button class='button'>reload</button>");
   reload.click(function () {
     loadMail(container)
   });
 
-  var set = $("<button class='set'>set pass</button>");
+  var set = $("<button class='button'>set pass</button>");
   set.click(function () {
     setPassword(container);
   });
