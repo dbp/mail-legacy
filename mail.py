@@ -40,7 +40,14 @@ def all():
 def junk(thread):
     if request.query.get('p','') != password:
         raise RuntimeError, "Invalid Password"
-    system("TZ=EST notmuch tag -import +spam -inbox thread:%s" % thread)
+    system("TZ=EST notmuch tag -important +spam -inbox thread:%s" % thread)
+    return {}
+
+@route('/mail/archive/<thread>')
+def archive(thread):
+    if request.query.get('p','') != password:
+        raise RuntimeError, "Invalid Password"
+    system("TZ=EST notmuch tag -important thread:%s" % thread)
     return {}
 
 

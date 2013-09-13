@@ -36,29 +36,23 @@
     border: 1px solid #ccc;
 }
 
-.close, .junk {
+.message-buttons {
     position: fixed;
-    top: 5px;
+    top: 10px;
+    right: 5px;
+}
+
+.message-buttons button {
     text-align: center;
     background-color: #999;
     color: #fff;
     padding: 2px;
+    margin: 0 3px;
 }
 
-.close:hover, .junk:hover {
+.message-buttons button:hover {
     cursor: pointer;
 }
-
-
-.close {
-    right: 5px;
-}
-
-
-.junk {
-    right: 75px;
-}
-
 
 .headers {
     font-weight: bold;

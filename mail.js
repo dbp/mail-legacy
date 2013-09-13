@@ -51,12 +51,13 @@ function loadMail(container) {
           $(".message-large").remove();
           link.addClass("active");
           var message = $("<div class='message-large'></div>");
-          var close = $("<button class='close'>close</button>");
+          var buttons = $("<div class='message-buttons'></div>");
+          var close = $("<button>close</button>");
           close.click(function () {
             message.remove();
             link.removeClass("active");
           });
-          var junk = $("<button class='junk'>junk</button>");
+          var junk = $("<button>junk</button>");
           junk.click(function () {
             message.remove();
             link.removeClass("active");
@@ -67,11 +68,23 @@ function loadMail(container) {
               }
             });
           });
+          var archive = $("<button>archive</button>");
+          archive.click(function () {
+            message.remove();
+            link.removeClass("active");
+            $.ajax("/mail/archive/" + e.thread, {
+              data: {p: getPassword()},
+              success: function (data) {
+                $(".message[data-thread=" + e.thread + "]").remove();
+              }
+            });
+          });
+          buttons.append(junk).append(archive).append(close);
           $.ajax("/mail/" + e.thread, {
             data: {p: getPassword()},
             success: function (data) {
               container.prepend(message);
-              message.append(junk).append(close);
+              message.append(buttons);
               renderMessages(data.content[0], message);
             }
           });
