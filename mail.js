@@ -45,6 +45,7 @@ function loadMail(container) {
       data.content.forEach(function (e) {
         var link = $("<div class='message'></div>");
         link.text(e.date_relative + " - " + e.authors + " - " + e.subject);
+        link.attr("data-thread", e.thread);
         link.click(function () {
           $(".message").removeClass("active");
           $(".message-large").remove();
@@ -55,11 +56,22 @@ function loadMail(container) {
             message.remove();
             link.removeClass("active");
           });
+          var junk = $("<button class='junk'>junk</button>");
+          junk.click(function () {
+            message.remove();
+            link.removeClass("active");
+            $.ajax("/mail/junk/" + e.thread, {
+              data: {p: getPassword()},
+              success: function (data) {
+                $(".message[data-thread=" + e.thread + "]").remove();
+              }
+            });
+          });
           $.ajax("/mail/" + e.thread, {
             data: {p: getPassword()},
             success: function (data) {
               container.prepend(message);
-              message.append(close);
+              message.append(junk).append(close);
               renderMessages(data.content[0], message);
             }
           });

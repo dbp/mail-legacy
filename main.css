@@ -36,20 +36,29 @@
     border: 1px solid #ccc;
 }
 
-.close {
+.close, .junk {
     position: fixed;
     top: 5px;
-    right: 5px;
     text-align: center;
-    width: 5em;
     background-color: #999;
     color: #fff;
     padding: 2px;
 }
 
-.close:hover {
+.close:hover, .junk:hover {
     cursor: pointer;
 }
+
+
+.close {
+    right: 5px;
+}
+
+
+.junk {
+    right: 75px;
+}
+
 
 .headers {
     font-weight: bold;

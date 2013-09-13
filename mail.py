@@ -1,5 +1,5 @@
 from bottle import route, run, request, static_file
-from os import popen
+from os import popen, system
 import json
 
 def shell(cmd):
@@ -35,6 +35,14 @@ def all():
     if request.query.get('p','') != password:
         raise RuntimeError, "Invalid Password"
     return {"content": shell("TZ=EST notmuch search --format=json tag:important AND tag:inbox")}
+
+@route('/mail/junk/<thread>')
+def junk(thread):
+    if request.query.get('p','') != password:
+        raise RuntimeError, "Invalid Password"
+    system("TZ=EST notmuch tag -import +spam -inbox thread:%s" % thread)
+    return {}
+
 
 @route('/mail/<thread>')
 def read(thread):
