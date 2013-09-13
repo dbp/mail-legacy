@@ -1,4 +1,4 @@
-function findBody(bodyContent, setBody) {
+function findBody(id, bodyContent, setBody) {
   if (typeof bodyContent === 'string') {
     setBody(bodyContent.replace(/\n/g, "<br />"));
   } else {
@@ -13,7 +13,7 @@ function findBody(bodyContent, setBody) {
         var load = $("<button class='button'>Load HTML</button>");
         setBody(load);
         load.click(function () {
-          $.ajax("/mail/html/" + content.id + "/" + tmp[0].id, {
+          $.ajax("/mail/html/" + id + "/" + tmp[0].id, {
             data: {p: getPassword()},
             success: function (data) {
               setBody(data);
@@ -24,7 +24,7 @@ function findBody(bodyContent, setBody) {
         // see if we need to go deeper
         tmp = bodyContent.filter(function (o) { return o["content-type"] == "multipart/alternative"});
         if (tmp.length > 0) {
-          findBody(tmp[0].content, setBody);
+          findBody(id, tmp[0].content, setBody);
         } else {
           setBody("Could not find message body in JSON.");
         }
@@ -51,7 +51,7 @@ function renderMessages(data, container) {
   function setBody(body) {
     bodyDiv.html(body);
   }
-  findBody(bodyContent, setBody);
+  findBody(content.id, bodyContent, setBody);
   section.append(bodyDiv);
 
   if (msgs.length > 1 && msgs[1].length > 0) {
